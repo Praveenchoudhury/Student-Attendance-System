@@ -1,0 +1,57 @@
+{% extends "_shell.html" %}
+{% set active_page = 'reports' %}
+{% block content %}
+<h1>Attendance Reports</h1>
+
+<div class="tabs">
+  <a class="tab" href="{{ url_for('reports') }}">Summary Report</a>
+  <a class="tab active" href="{{ url_for('reports_history') }}">Per-Student History</a>
+</div>
+
+<form method="get" action="{{ url_for('reports_history') }}">
+  <div class="row">
+    <label>Student
+      <select name="student_id">
+        <option value="">— select —</option>
+        {% for s in students %}
+          <option value="{{ s['id'] }}" {% if sid == s['id'] %}selected{% endif %}>
+            {{ s['roll_no'] }} - {{ s['name'] }} ({{ s['class_name'] }})
+          </option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>From<input type="date" name="from" value="{{ start }}" /></label>
+    <label>To<input type="date" name="to" value="{{ end }}" /></label>
+    <button type="submit" class="btn btn-outline">View</button>
+  </div>
+</form>
+
+{% if metrics %}
+  <div class="metrics">
+    <div class="metric"><span class="metric-label">Total Marked</span><span class="metric-value">{{ metrics.total }}</span></div>
+    <div class="metric"><span class="metric-label">Present</span><span class="metric-value">{{ metrics.present }}</span></div>
+    <div class="metric"><span class="metric-label">Absent</span><span class="metric-value">{{ metrics.absent }}</span></div>
+    <div class="metric"><span class="metric-label">Late</span><span class="metric-value">{{ metrics.late }}</span></div>
+    <div class="metric"><span class="metric-label">Attendance %</span><span class="metric-value">{{ metrics.pct }}%</span></div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Date</th><th>Status</th><th>Remarks</th></tr></thead>
+      <tbody>
+        {% if history %}
+          {% for h in history %}
+            <tr>
+              <td>{{ h['date'] }}</td>
+              <td class="status-{{ h['status'] }}">{{ h['status'] }}</td>
+              <td>{{ h['remarks'] or '' }}</td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="3" class="muted" style="text-align:center; padding:20px">No attendance recorded in this range.</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+{% endblock %}

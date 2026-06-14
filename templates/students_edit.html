@@ -1,0 +1,30 @@
+{% extends "_shell.html" %}
+{% set active_page = 'students' %}
+{% block content %}
+<h1>Edit Student</h1>
+<p class="muted"><a href="{{ url_for('students_list') }}">&larr; Back to all students</a></p>
+
+<form method="post" action="{{ url_for('students_edit', sid=student['id']) }}" class="form-grid">
+  <label>Roll No *<input type="text" name="roll_no" value="{{ student['roll_no'] }}" required /></label>
+  <label>Full Name *<input type="text" name="name" value="{{ student['name'] }}" required /></label>
+  <label>Class *<input type="text" name="class_name" value="{{ student['class_name'] }}" required /></label>
+  <label>Section<input type="text" name="section" value="{{ student['section'] or '' }}" /></label>
+  <label>Gender
+    <select name="gender">
+      {% for g in ['Male','Female','Other'] %}
+        <option {% if student['gender'] == g %}selected{% endif %}>{{ g }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Date of Birth<input type="date" name="date_of_birth" value="{{ student['date_of_birth'] or '' }}" /></label>
+  <label>Email<input type="email" name="email" value="{{ student['email'] or '' }}" /></label>
+  <label>Phone<input type="tel" name="phone" value="{{ student['phone'] or '' }}" /></label>
+  <label class="full">Guardian Name<input type="text" name="guardian_name" value="{{ student['guardian_name'] or '' }}" /></label>
+  <label class="full">Address<textarea name="address">{{ student['address'] or '' }}</textarea></label>
+  <label class="full">Login PIN<input type="text" name="pin" value="{{ student['pin'] or '' }}" /></label>
+  <div class="full">
+    <button type="submit" class="btn btn-primary">Update Student</button>
+    <a href="{{ url_for('students_list') }}" class="btn btn-outline">Cancel</a>
+  </div>
+</form>
+{% endblock %}

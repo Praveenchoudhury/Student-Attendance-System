@@ -1,0 +1,54 @@
+{% extends "_shell.html" %}
+{% set active_page = 'dashboard' %}
+{% block content %}
+<h1>Dashboard</h1>
+<p class="muted">Overview of students and today's attendance</p>
+
+<div class="metrics">
+  <div class="metric"><span class="metric-label">Total Students</span><span class="metric-value">{{ total_students }}</span></div>
+  <div class="metric"><span class="metric-label">Total Classes</span><span class="metric-value">{{ total_classes }}</span></div>
+  <div class="metric"><span class="metric-label">Present Today</span><span class="metric-value">{{ present_today }}</span></div>
+  <div class="metric"><span class="metric-label">Absent Today</span><span class="metric-value">{{ absent_today }}</span></div>
+  <div class="metric"><span class="metric-label">Late Today</span><span class="metric-value">{{ late_today }}</span></div>
+</div>
+
+<h2>Last 7 Days Attendance Trend</h2>
+<div class="chart">
+  {% set has_trend = days|selectattr('total','gt',0)|list|length > 0 %}
+  {% if not has_trend %}
+    <p class="muted">No attendance recorded in the last 7 days yet.</p>
+  {% else %}
+    {% for d in days %}
+      <div class="stacked-row">
+        <div class="bar-label">{{ d.date[5:] }}</div>
+        <div class="stacked-bar" style="width: {{ (d.total / trend_max * 100)|round(1) }}%">
+          {% if d.present %}<div class="bar-fill present" style="flex: {{ d.present }}">{{ d.present }}</div>{% endif %}
+          {% if d.absent %}<div class="bar-fill absent" style="flex: {{ d.absent }}">{{ d.absent }}</div>{% endif %}
+          {% if d.late %}<div class="bar-fill late" style="flex: {{ d.late }}">{{ d.late }}</div>{% endif %}
+        </div>
+        <div class="bar-value">{{ d.total }}</div>
+      </div>
+    {% endfor %}
+    <div class="legend">
+      <span><span class="legend-dot" style="background: var(--success)"></span>Present</span>
+      <span><span class="legend-dot" style="background: var(--danger)"></span>Absent</span>
+      <span><span class="legend-dot" style="background: var(--warn)"></span>Late</span>
+    </div>
+  {% endif %}
+</div>
+
+<h2>Class-wise Student Distribution</h2>
+<div class="chart">
+  {% if not dist %}
+    <p class="muted">No students added yet. Add students from the Students page.</p>
+  {% else %}
+    {% for d in dist %}
+      <div class="bar-row">
+        <div class="bar-label">{{ d.class_name }}</div>
+        <div class="bar-track"><div class="bar-fill" style="width: {{ (d.count / dist_max * 100)|round(1) }}%"></div></div>
+        <div class="bar-value">{{ d.count }}</div>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>
+{% endblock %}

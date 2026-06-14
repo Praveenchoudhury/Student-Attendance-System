@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <h2>Attendance</h2>
+      <p class="role-label">{{ 'Teacher' if current_role == 'teacher' else 'Student' }}</p>
+      {% if current_role == 'student' and current_student %}
+        <p class="user-label">{{ current_student['name'] }} &bull; Roll {{ current_student['roll_no'] }}</p>
+      {% endif %}
+    </div>
+
+    <nav class="nav">
+      {% if current_role == 'teacher' %}
+        <a class="nav-item {% if active_page=='dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a class="nav-item {% if active_page=='students' %}active{% endif %}" href="{{ url_for('students_list') }}">Students</a>
+        <a class="nav-item {% if active_page=='attendance' %}active{% endif %}" href="{{ url_for('attendance') }}">Mark Attendance</a>
+        <a class="nav-item {% if active_page=='reports' %}active{% endif %}" href="{{ url_for('reports') }}">Attendance Reports</a>
+      {% else %}
+        <a class="nav-item {% if active_page=='profile' %}active{% endif %}" href="{{ url_for('profile') }}">My Profile</a>
+        <a class="nav-item {% if active_page=='my_attendance' %}active{% endif %}" href="{{ url_for('my_attendance') }}">My Attendance</a>
+      {% endif %}
+    </nav>
+
+    <form method="post" action="{{ url_for('logout') }}" class="logout-form">
+      <button type="submit" class="btn btn-outline">Logout</button>
+    </form>
+  </aside>
+
+  <main class="main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+        <div class="flash {{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <div class="page">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "_shell.html" %}
+{% set active_page = 'attendance' %}
+{% block content %}
+<h1>Mark Daily Attendance</h1>
+
+<form method="get" action="{{ url_for('attendance') }}">
+  <div class="row">
+    <label>Date<input type="date" name="date" value="{{ att_date }}" max="{{ today }}" onchange="this.form.submit()" /></label>
+    <label>Class
+      <select name="class" onchange="this.form.submit()">
+        <option value="All" {% if att_class == 'All' %}selected{% endif %}>All</option>
+        {% for c in classes %}
+          <option value="{{ c }}" {% if att_class == c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+      </select>
+    </label>
+  </div>
+</form>
+
+{% if rows %}
+  <form method="post" action="{{ url_for('attendance', date=att_date) }}{% if att_class != 'All' %}&class={{ att_class }}{% endif %}">
+    <div class="row">
+      <button type="submit" name="action" value="present_all" class="btn btn-outline">Mark all Present</button>
+      <button type="submit" name="action" value="absent_all" class="btn btn-outline">Mark all Absent</button>
+      <button type="submit" name="action" value="save" class="btn btn-primary">Save Attendance</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Roll No</th><th>Name</th><th>Class</th><th>Section</th><th>Status</th><th>Remarks</th></tr>
+        </thead>
+        <tbody>
+          {% for r in rows %}
+            <tr>
+              <td>
+                <input type="hidden" name="student_id" value="{{ r['id'] }}" />
+                {{ r['roll_no'] }}
+              </td>
+              <td>{{ r['name'] }}</td>
+              <td>{{ r['class_name'] }}</td>
+              <td>{{ r['section'] or '' }}</td>
+              <td>
+                <select name="status_{{ r['id'] }}">
+                  {% for opt in ['Not Marked','Present','Absent','Late'] %}
+                    <option {% if r['status'] == opt %}selected{% endif %}>{{ opt }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+              <td><input type="text" name="remarks_{{ r['id'] }}" value="{{ r['remarks'] }}" /></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </form>
+{% else %}
+  <p class="muted">No students found for the selected class. Add students first.</p>
+{% endif %}
+{% endblock %}

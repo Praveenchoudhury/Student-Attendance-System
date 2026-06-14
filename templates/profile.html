@@ -1,0 +1,27 @@
+{% extends "_shell.html" %}
+{% set active_page = 'profile' %}
+{% block content %}
+<h1>Welcome, {{ student['name'] }}</h1>
+<h2>My Information</h2>
+
+<div class="profile-grid">
+  {% set rows = [
+    ('Roll No', student['roll_no']),
+    ('Name', student['name']),
+    ('Class', student['class_name']),
+    ('Section', student['section'] or '—'),
+    ('Gender', student['gender'] or '—'),
+    ('Date of Birth', student['date_of_birth'] or '—'),
+    ('Email', student['email'] or '—'),
+    ('Phone', student['phone'] or '—'),
+    ('Guardian', student['guardian_name'] or '—'),
+    ('Address', student['address'] or '—'),
+  ] %}
+  {% for label, value in rows %}
+    <div class="profile-row">
+      <span class="profile-label">{{ label }}</span>
+      <span class="profile-value">{{ value }}</span>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

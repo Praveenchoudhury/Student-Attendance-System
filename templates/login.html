@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="login-view">
+  <div class="login-card">
+    <h1>Student Information<br />&amp; Attendance System</h1>
+    <p class="muted">Please select your role to continue</p>
+
+    <div class="role-tabs">
+      <a class="role-tab {% if selected=='teacher' %}active{% endif %}" href="{{ url_for('login', role='teacher') }}">Teacher</a>
+      <a class="role-tab {% if selected=='student' %}active{% endif %}" href="{{ url_for('login', role='student') }}">Student</a>
+    </div>
+
+    {% if selected == 'teacher' %}
+      <form class="login-form" method="post" action="{{ url_for('login') }}">
+        <input type="hidden" name="role" value="teacher" />
+        <h2>Teacher Login</h2>
+        <label>Username
+          <input type="text" name="username" placeholder="(optional)" />
+        </label>
+        <label>Password
+          <input type="password" name="password" placeholder="(optional)" />
+        </label>
+        <button type="submit" class="btn btn-primary">Login as Teacher</button>
+      </form>
+    {% else %}
+      <form class="login-form" method="post" action="{{ url_for('login') }}">
+        <input type="hidden" name="role" value="student" />
+        <h2>Student Login</h2>
+        <label>Roll No
+          <input type="text" name="roll_no" placeholder="Enter your Roll No" />
+        </label>
+        <label>PIN
+          <input type="password" name="pin" placeholder="Enter the PIN your teacher gave you" />
+        </label>
+        {% if error %}<div class="error">{{ error }}</div>{% endif %}
+        <button type="submit" class="btn btn-primary">Login as Student</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

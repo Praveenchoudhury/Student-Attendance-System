@@ -1,0 +1,29 @@
+{% extends "_shell.html" %}
+{% set active_page = 'students' %}
+{% block content %}
+<h1>Students</h1>
+
+<div class="tabs">
+  <a class="tab" href="{{ url_for('students_list') }}">All Students</a>
+  <a class="tab active" href="{{ url_for('students_add') }}">Add Student</a>
+</div>
+
+<form method="post" action="{{ url_for('students_add') }}" class="form-grid">
+  <label>Roll No *<input type="text" name="roll_no" required /></label>
+  <label>Full Name *<input type="text" name="name" required /></label>
+  <label>Stream *<input type="text" name="class_name" placeholder="MCA/MBA" required /></label>
+  <label>Section<input type="text" name="section" placeholder="e.g., A" /></label>
+  <label>Gender
+    <select name="gender">
+      <option>Male</option><option>Female</option><option>Other</option>
+    </select>
+  </label>
+  <label>Date of Birth<input type="date" name="date_of_birth" /></label>
+  <label>Email<input type="email" name="email" /></label>
+  <label>Phone<input type="tel" name="phone" /></label>
+  <label class="full">Guardian Name<input type="text" name="guardian_name" /></label>
+  <label class="full">Address<textarea name="address"></textarea></label>
+  <label class="full">Login PIN *<input type="text" name="pin" placeholder="e.g., 1234" required /></label>
+  <div class="full"><button type="submit" class="btn btn-primary">Add Student</button></div>
+</form>
+{% endblock %}
